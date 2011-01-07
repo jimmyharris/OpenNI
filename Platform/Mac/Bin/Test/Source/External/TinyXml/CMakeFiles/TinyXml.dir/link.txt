@@ -1,1 +1,0 @@
-/usr/bin/c++  -O3 -DNDEBUG -arch i386 -arch x86_64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -dynamiclib -headerpad_max_install_names  -o libTinyXml.dylib -install_name @executable_path/../lib/libTinyXml.dylib CMakeFiles/TinyXml.dir/tinyxml.cpp.o CMakeFiles/TinyXml.dir/tinystr.cpp.o CMakeFiles/TinyXml.dir/tinyxmlerror.cpp.o CMakeFiles/TinyXml.dir/tinyxmlparser.cpp.o 
