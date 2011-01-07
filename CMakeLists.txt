@@ -24,20 +24,22 @@ if(CREATE_TEST_BUILD)
 	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
 elseif(CREATE_OF_BUILD)
 	set(OF_OPENNI_DATA_DIR "../../../data/openni/") 
+	#set(OF_OPENNI_DATA_DIR "../../../../../../../addons/ofxOpenNI/")
         add_definitions(-DCUSTOM_SAMPLE_XML_PATH="${OF_OPENNI_DATA_DIR}config/SamplesConfig.xml")
         add_definitions(-DXN_USE_CUSTOM_MODULES_FILE="${OF_OPENNI_DATA_DIR}config/modules.xml")
 
         # Set relative install paths (for now we only support the test build)
-        set(LIB_INSTALL_PATH "lib/")
+        set(LIB_INSTALL_PATH "openni/lib/")
         set(BIN_INSTALL_PATH "bin/")
         set(INCLUDE_FILES_INSTALL_PATH "include/")
-        set(CONFIG_INSTALL_PATH "config/")
-        set(INSTALL_NAME_VALUE "@executable_path/${OF_OPENNI_DATA_DIR}lib") # only for mac, the @executable_path to lib
-
-        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/SamplesConfig.xml DESTINATION ./${CONFIG_INSTALL_PATH})
+        set(CONFIG_INSTALL_PATH "openni/config/")
+        #set(INSTALL_NAME_VALUE "@executable_path/${OF_OPENNI_DATA_DIR}lib/osx") # only for mac, the @executable_path to lib
+	set(INSTALL_NAME_VALUE "@executable_path/${OF_OPENNI_DATA_DIR}lib") # only for mac, the @executable_path to lib
+        #install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/SamplesConfig.xml DESTINATION ./${CONFIG_INSTALL_PATH})
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/modules.xml DESTINATION ./${CONFIG_INSTALL_PATH})
         install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/GlobalDefaults.ini DESTINATION ./${CONFIG_INSTALL_PATH})
-        set(CMAKE_SKIP_RPATH false)
+        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/ofxopenni_config.xml DESTINATION ./${CONFIG_INSTALL_PATH})
+	set(CMAKE_SKIP_RPATH false)
         set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
 else()
 	message(FATAL_ERROR "For now you can only create a test build")
@@ -118,7 +120,7 @@ add_subdirectory("./Samples/NiSimpleRead")  #Compiles and runs on Mac
 add_subdirectory("./Samples/NiSimpleViewer") #Compiles and runs on Mac
 add_subdirectory("./Samples/NiUserTracker") #Compiles and runs on Mac
 add_subdirectory("./Samples/NiViewer") #Compiles and runs on Mac
-
+add_subdirectory("./Samples/ofxOpenNI") 
 
 # Utils
 # ---------------------------

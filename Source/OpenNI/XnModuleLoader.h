@@ -49,6 +49,7 @@ typedef struct XnModuleInstance
 	XnModuleNodeHandle hNode;
 } XnModuleInstance;
 
+
 class XnModuleLoader
 {
 public:
