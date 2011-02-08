@@ -96,18 +96,30 @@ XnStatus resolveModulesFile(XnChar* strFileName, XnUInt32 nBufSize)
 {
 	XnStatus nRetVal = XN_STATUS_OK;
 
-#if (XN_PLATFORM == XN_PLATFORM_WIN32)
+#ifdef XN_USE_CUSTOM_MODULES_FILE // @todo Porting to Mac - use a custom module file path
+	nRetVal = xnOSStrCopy(strFileName, XN_USE_CUSTOM_MODULES_FILE, nBufSize);
+	XN_IS_STATUS_OK(nRetVal);
+#elif (XN_PLATFORM == XN_PLATFORM_WIN32)
 	nRetVal = xnOSExpandEnvironmentStrings("%OPEN_NI_INSTALL_PATH%\\Data\\modules.xml", strFileName, nBufSize);
 	XN_IS_STATUS_OK(nRetVal);
-#elif (XN_PLATFORM == XN_PLATFORM_LINUX_X86 || XN_PLATFORM == XN_PLATFORM_LINUX_ARM)
+#elif (XN_PLATFORM == XN_PLATFORM_LINUX_X86 || XN_PLATFORM == XN_PLATFORM_LINUX_ARM || XN_PLATFORM == XN_PLATFORM_MACOSX)
 	nRetVal = xnOSStrCopy(strFileName, "/var/lib/ni/modules.xml", nBufSize);
 	XN_IS_STATUS_OK(nRetVal);
 #else
-	#error "Module Loader is not supported on this platform!"
+	// check if a custom modules path has been set.
+	if (m_modulesXMLPathSet) {
+		nRetVal = xnOSStrCopy(strFileName, m_modulesXMLFilePath, XN_FILE_MAX_PATH);
+		XN_IS_STATUS_OK(nRetVal);
+	}
+	return XN_STATUS_ERROR;
+	//##error "Module Loader is not supported on this platform!"
 #endif
 
 	return (XN_STATUS_OK);
 }
+
+
+
 
 XnStatus loadModulesFile(TiXmlDocument& doc)
 {
@@ -116,6 +128,8 @@ XnStatus loadModulesFile(TiXmlDocument& doc)
 	XnChar strFileName[XN_FILE_MAX_PATH];
 
 	nRetVal = resolveModulesFile(strFileName, XN_FILE_MAX_PATH);
+	printf("Using XML modules file path: %s\n", strFileName); 
+	
 	XN_IS_STATUS_OK(nRetVal);
 	
 	XnBool bDoesExist = FALSE;
@@ -170,6 +184,7 @@ XnModuleLoader::~XnModuleLoader()
 	}
 }
 
+
 void XnModuleLoader::SetLoadingMode(LoadingMode mode)
 {
 	m_loadingMode = mode;
@@ -183,6 +198,7 @@ XnStatus XnModuleLoader::Init()
 	// we keep current dir, so that we can switch back once loading is complete.
 	XnChar strWorkingDir[XN_FILE_MAX_PATH] = "";
 	nRetVal = xnOSGetCurrentDir(strWorkingDir, XN_FILE_MAX_PATH);
+	
 	XN_IS_STATUS_OK(nRetVal);
 
 	nRetVal = LoadAllModules();
@@ -244,6 +260,7 @@ XnStatus XnModuleLoader::LoadModule(const XnChar* strFileName, const XnChar* str
 	// set current dir to this file dir (to help it load other DLLs)
 	XnChar strDir[XN_FILE_MAX_PATH];
 	nRetVal = xnOSGetDirName(strFileName, strDir, XN_FILE_MAX_PATH);
+	printf("OS dir name: %s\n", strDir);
 	XN_IS_STATUS_OK(nRetVal);
 
 	nRetVal = xnOSSetCurrentDir(strDir);

@@ -28,7 +28,7 @@ import re
 VERSION_MAJOR = 1
 VERSION_MINOR = 0
 VERSION_MAINTENANCE = 0
-VERSION_BUILD = 23
+VERSION_BUILD = 25
 
 # ---------------------- FUNCTIONS -----------------------
 def regx_replace(findStr,repStr,filePath):
@@ -69,6 +69,11 @@ def update_redist_defs (filePath):
 def update_redist_eng_defs (filePath):
 	print "Updating Redist Engine version defines: " + filePath
 	regx_replace("  <VERSION_NUMBER>(\d+).(\d+).(\d+)</VERSION_NUMBER>", "  <VERSION_NUMBER>" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + "." + str(VERSION_MAINTENANCE) + "</VERSION_NUMBER>", filePath)
+	
+def update_assembly_info (filePath):
+	print "Updating assembly info: " + filePath
+	regx_replace(r"^\[assembly: AssemblyVersion\(\"(.*)\"\)\]", "[assembly: AssemblyVersion(\"" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + "." + str(VERSION_MAINTENANCE) + "." + str(VERSION_BUILD) + "\")]", filePath)
+	regx_replace(r"^\[assembly: AssemblyFileVersion\(\"(.*)\"\)\]", "[assembly: AssemblyFileVersion(\"" + str(VERSION_MAJOR) + "." + str(VERSION_MINOR) + "." + str(VERSION_MAINTENANCE) + "." + str(VERSION_BUILD) + "\")]", filePath)
 
 # ----------------------- MAIN -------------------------
 if len(sys.argv) == 5:
@@ -99,6 +104,8 @@ update_self_defs("./UpdateVersion.py")
 update_redist_defs("./RedistMaker.bat")
 update_redist_eng_defs("./OpenNi_Config.xml")
 update_src_ver_defs("../../../Include/XnVersion.h")
+update_assembly_info("../Build/Res/AssemblyInfo-OpenNI.cs")
+update_assembly_info("../../Linux-x86/Build/Res/AssemblyInfo-OpenNI.cs")
 
 try:
 	update_redist_defs("../../../ExportOpenSource.bat")

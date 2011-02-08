@@ -46,7 +46,11 @@ XnBool g_bDrawSkeleton = TRUE;
 XnBool g_bPrintID = TRUE;
 XnBool g_bPrintState = TRUE;
 
-#include <GL/glut.h>
+#if (XN_PLATFORM == XN_PLATFORM_MACOSX)
+	#include <GLUT/glut.h>
+#else
+	#include <GL/glut.h>
+#endif
 
 #define GL_WIN_SIZE_X 720
 #define GL_WIN_SIZE_Y 480
@@ -241,8 +245,20 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		nRetVal = g_Context.InitFromXmlFile(SAMPLE_XML_PATH);
-		CHECK_RC(nRetVal, "InitFromXml");
+		xn::EnumerationErrors errors;
+		nRetVal = g_Context.InitFromXmlFile(SAMPLE_XML_PATH, &errors);
+		if (nRetVal == XN_STATUS_NO_NODE_PRESENT)
+		{
+			XnChar strError[1024];
+			errors.ToString(strError, 1024);
+			printf("%s\n", strError);
+			return (nRetVal);
+		}
+		else if (nRetVal != XN_STATUS_OK)
+		{
+			printf("Open failed: %s\n", xnGetStatusString(nRetVal));
+			return (nRetVal);
+		}
 	}
 
 	nRetVal = g_Context.FindExistingNode(XN_NODE_TYPE_DEPTH, g_DepthGenerator);
