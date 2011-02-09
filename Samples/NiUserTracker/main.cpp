@@ -219,7 +219,11 @@ void glInit (int * pargc, char ** argv)
 	glDisableClientState(GL_COLOR_ARRAY);
 }
 
-#define SAMPLE_XML_PATH "../../../../Data/SamplesConfig.xml"
+#ifdef CUSTOM_SAMPLE_XML_PATH
+  #define SAMPLE_XML_PATH CUSTOM_SAMPLE_XML_PATH
+#else
+  #define SAMPLE_XML_PATH "../../../../Data/SamplesConfig.xml"
+#endif
 
 #define CHECK_RC(nRetVal, what)										\
 	if (nRetVal != XN_STATUS_OK)									\
