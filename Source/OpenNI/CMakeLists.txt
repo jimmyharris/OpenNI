@@ -42,7 +42,7 @@ endif()
 find_library(LIBDL dl)
 target_link_libraries(
 	${OPENNI_LIB_NAME}
-	${USB_LIB_NAME} 
+	${USB_LIBRARY} 
 	${LIBDL} 
 	${TINYXML_LIB_NAME}
 	${CMAKE_EXE_LINKER_FLAGS}

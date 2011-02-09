@@ -1,0 +1,5 @@
+<Modules>
+    <Module path="libnimMockNodes.so" />
+    <Module path="libnimCodecs.so" />
+    <Module path="libnimRecorder.so" />
+</Modules>

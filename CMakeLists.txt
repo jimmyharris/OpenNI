@@ -4,46 +4,8 @@ project(OpenNI)
 
 # Options
 # ---------
-OPTION(CREATE_OF_BUILD "Create a openFrameworks build" ON)
-OPTION(CREATE_TEST_BUILD "Create a build which you do not have to install to" OFF)
-if(CREATE_TEST_BUILD) 
-	add_definitions(-DCUSTOM_SAMPLE_XML_PATH="./../config/SamplesConfig.xml")
-	add_definitions(-DXN_USE_CUSTOM_MODULES_FILE="./../config/modules.xml")
-
-	# Set relative install paths (for now we only support the test build)
-	set(LIB_INSTALL_PATH "lib/")
-	set(BIN_INSTALL_PATH "bin/")
-	set(INCLUDE_FILES_INSTALL_PATH "include/")
-	set(CONFIG_INSTALL_PATH "config/")
-	set(INSTALL_NAME_VALUE "@executable_path/../lib") # only for mac, the @executable_path to lib
-
-	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/Test/config/SamplesConfig.xml DESTINATION ./${CONFIG_INSTALL_PATH})
-	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/Test/config/modules.xml DESTINATION ./${CONFIG_INSTALL_PATH})
-	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/Test/config/GlobalDefaults.ini DESTINATION ./${CONFIG_INSTALL_PATH})
-	set(CMAKE_SKIP_RPATH false)
-	set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
-elseif(CREATE_OF_BUILD)
-	set(OF_OPENNI_DATA_DIR "../../../data/openni/") 
-	#set(OF_OPENNI_DATA_DIR "../../../../../../../addons/ofxOpenNI/")
-        add_definitions(-DCUSTOM_SAMPLE_XML_PATH="${OF_OPENNI_DATA_DIR}config/SamplesConfig.xml")
-        add_definitions(-DXN_USE_CUSTOM_MODULES_FILE="${OF_OPENNI_DATA_DIR}config/modules.xml")
-
-        # Set relative install paths (for now we only support the test build)
-        set(LIB_INSTALL_PATH "openni/lib/")
-        set(BIN_INSTALL_PATH "bin/")
-        set(INCLUDE_FILES_INSTALL_PATH "include/")
-        set(CONFIG_INSTALL_PATH "openni/config/")
-        #set(INSTALL_NAME_VALUE "@executable_path/${OF_OPENNI_DATA_DIR}lib/osx") # only for mac, the @executable_path to lib
-	set(INSTALL_NAME_VALUE "@executable_path/${OF_OPENNI_DATA_DIR}lib") # only for mac, the @executable_path to lib
-        #install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/SamplesConfig.xml DESTINATION ./${CONFIG_INSTALL_PATH})
-        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/modules.xml DESTINATION ./${CONFIG_INSTALL_PATH})
-        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/GlobalDefaults.ini DESTINATION ./${CONFIG_INSTALL_PATH})
-        install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Mac/Bin/openFrameworks/config/ofxopenni_config.xml DESTINATION ./${CONFIG_INSTALL_PATH})
-	set(CMAKE_SKIP_RPATH false)
-        set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
-else()
-	message(FATAL_ERROR "For now you can only create a test build")
-endif()
+add_definitions(-DCUSTOM_SAMPLE_XML_PATH="config/SamplesConfig.xml")
+add_definitions(-DXN_USE_CUSTOM_MODULES_FILE="config/modules.xml")
 
 # Find platform 
 # -------------
@@ -55,7 +17,9 @@ elseif (APPLE)
 	set(OPENNI_PLATFORM_APPLE true)
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 # Some global variables
 # ----------------------
@@ -63,12 +27,14 @@ set(TINYXML_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/External/TinyXml/")
 set(OPENNI_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Include/")
 set(OPENNI_MODULES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules")
 set(TINYXML_LIB_NAME TinyXml)
-set(JPEG_LIB_NAME JPEG)
+set(JPEG_LIB_NAME jpeg)
 set(OPENNI_LIB_NAME OpenNI)
 set(NIMCOMMON_LIB_NAME nimCommon)
 set(NIMCODECS_LIB_NAME nimCodecs)
 set(NIMMOCKNODES_LIB_NAME nimMockNodes)
 set(NIMRECORDER_LIB_NAME nimRecorder)
+
+INCLUDE_DIRECTORIES(${OPENNI_INCLUDE_DIR})
 
 # Find JPEG system lib
 # ---------------------
@@ -83,19 +49,10 @@ endif()
 # Find USB lib
 # -------------
 if(OPENNI_PLATFORM_LINUX OR OPENNI_PLATFORM_APPLE) 
-  find_package(libusb-1.0)
-  if(NOT USB_LIB_FOUND)
-	# When not found compoile using libusb in external dir.
-	set(USB_LIB_FOUND true)
-	if (OPENNI_PLATFORM_APPLE)
-		set(USB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/External/LibUSB/Mac/")
-		set(USB_LIB_NAME "${CMAKE_CURRENT_SOURCE_DIR}/Source/External/LibUSB/Mac/libusb-1.0.a")
-		message("WITH USB")
-	endif()
-  endif()
+  find_package(USB)
 endif()
 
-if (NOT USB_LIB_FOUND OR NOT JPEG_FOUND)
+if (NOT USB_FOUND OR NOT JPEG_FOUND)
 	message(FATAL_ERROR "Could not find library dependencies")
 endif()
 
@@ -120,10 +77,9 @@ add_subdirectory("./Samples/NiSimpleRead")  #Compiles and runs on Mac
 add_subdirectory("./Samples/NiSimpleViewer") #Compiles and runs on Mac
 add_subdirectory("./Samples/NiUserTracker") #Compiles and runs on Mac
 add_subdirectory("./Samples/NiViewer") #Compiles and runs on Mac
-add_subdirectory("./Samples/ofxOpenNI") 
 
 # Utils
 # ---------------------------
 add_subdirectory("./Source/Utils/")
 
-
+add_subdirectory(SensorKinect)
