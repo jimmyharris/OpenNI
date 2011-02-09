@@ -440,9 +440,6 @@ XN_C_API XnStatus xnOSGetCurrentDir(XnChar* cpDirName, const XnUInt32 nBufferSiz
 
 XN_C_API XnStatus xnOSSetCurrentDir(const XnChar* cpDirName)
 {
-	char buffer[2000];
-	getcwd( buffer, 1000);
-	printf("CUR DIR:%s\n", buffer);
 	if (0 != chdir(cpDirName))
 	{
 		return (XN_STATUS_ERROR);

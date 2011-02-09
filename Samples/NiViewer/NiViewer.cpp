@@ -88,11 +88,7 @@ using namespace glh;
 // --------------------------------
 // Defines
 // --------------------------------
-#ifndef CUSTOM_SAMPLE_XML_PATH
-# define SAMPLE_XML_PATH "../../../../Data/SamplesConfig.xml"
-#else
-# define SAMPLE_XML_PATH CUSTOM_SAMPLE_XML_PATH
-#endif
+#define SAMPLE_XML_PATH "../../../../Data/SamplesConfig.xml"
 
 // --------------------------------
 // Types
