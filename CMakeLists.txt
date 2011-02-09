@@ -5,7 +5,9 @@ project(OpenNI)
 # Options
 # ---------
 add_definitions(-DCUSTOM_SAMPLE_XML_PATH="config/SamplesConfig.xml")
+add_definitions(-DCUSTOM_SAMPLE_USER_XML_PATH="config/Sample-User.xml")
 add_definitions(-DXN_USE_CUSTOM_MODULES_FILE="config/modules.xml")
+ADD_DEFINITIONS(-DUSE_GLUT)
 
 # Find platform 
 # -------------
@@ -83,3 +85,9 @@ add_subdirectory("./Samples/NiViewer") #Compiles and runs on Mac
 add_subdirectory("./Source/Utils/")
 
 add_subdirectory(SensorKinect)
+
+SET(NITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Nite/Include)
+add_subdirectory(Nite)
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Data
+                                                           ${EXECUTABLE_OUTPUT_PATH}/config)
