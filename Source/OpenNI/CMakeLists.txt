@@ -28,15 +28,6 @@ add_library(
 	${${OPENNI_LIB_NAME}_platform_sources}
 )
 
-# The install_name is Mac OSX specific and is used to set the RPATH on a executable
-# ----------------------------------------------------------------------------------
-if(OPENNI_PLATFORM_APPLE)
-	set_target_properties(${OPENNI_LIB_NAME} PROPERTIES 
-		BUILD_WITH_INSTALL_RPATH ON
-		INSTALL_NAME_DIR ${INSTALL_NAME_VALUE}
-	)
-endif()
-
 # Set Link libraries.
 # -------------------
 find_library(LIBDL dl)

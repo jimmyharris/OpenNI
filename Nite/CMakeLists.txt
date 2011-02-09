@@ -1,6 +1,15 @@
 PROJECT(Nite)
 
-file(GLOB NITE_LIBS "Lib/*.so")
+IF (APPLE)
+  file(GLOB NITE_LIBS "Lib/MacOSX/*.dylib")
+ELSEIF (UNIX)
+  file(GLOB NITE_LIBS "Lib/Linux32/*.so")
+ENDIF()
+
 file(COPY ${NITE_LIBS} DESTINATION ${LIBRARY_OUTPUT_PATH})
+# Fix Nite binaries RPATH on Mac.
+IF (APPLE)
+  execute_process(COMMAND sh "${CMAKE_CURRENT_SOURCE_DIR}/apple_fix_nite_libs.sh" WORKING_DIRECTORY ${LIBRARY_OUTPUT_PATH})
+ENDIF()
 
 ADD_SUBDIRECTORY(Samples/Players)

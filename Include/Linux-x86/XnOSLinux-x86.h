@@ -119,7 +119,7 @@ typedef	void* XN_THREAD_PARAM;
 //---------------------------------------------------------------------------
 /** A Xiron mutex type. */
 struct XnMutex;
-typedef	XnMutex* XN_MUTEX_HANDLE;
+typedef	struct XnMutex* XN_MUTEX_HANDLE;
 
 //---------------------------------------------------------------------------
 // Critical Sections

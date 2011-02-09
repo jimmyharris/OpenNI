@@ -22,6 +22,7 @@ endif()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_INSTALL_RPATH ../lib)
 
 # Some global variables
 # ----------------------
@@ -50,8 +51,15 @@ endif()
 
 # Find USB lib
 # -------------
-if(OPENNI_PLATFORM_LINUX OR OPENNI_PLATFORM_APPLE) 
+if(NOT WIN32) 
   find_package(USB)
+  IF(NOT USB_FOUND)
+    IF (APPLE)
+      SET(USB_FOUND TRUE)
+      SET(USB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/External/LibUSB/Mac")
+      SET(USB_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/Source/External/LibUSB/Mac/libusb-1.0.a")
+    ENDIF(APPLE)
+  ENDIF()
 endif()
 
 if (NOT USB_FOUND OR NOT JPEG_FOUND)
@@ -91,3 +99,10 @@ add_subdirectory(Nite)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Data
                                                            ${EXECUTABLE_OUTPUT_PATH}/config)
+IF (APPLE)
+  execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Data/modules.xml.mac
+                                                             ${EXECUTABLE_OUTPUT_PATH}/config/modules.xml)
+ELSEIF(UNIX)
+  execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Data/modules.xml.linux
+                                                             ${EXECUTABLE_OUTPUT_PATH}/config/modules.xml)
+ENDIF()
