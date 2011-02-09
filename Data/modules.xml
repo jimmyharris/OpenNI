@@ -2,7 +2,6 @@
     <Module path="libnimMockNodes.so" />
     <Module path="libnimCodecs.so" />
     <Module path="libnimRecorder.so" />
-    <Module path="/home/nburrus/tmp/openni/nburrus/build/lib/libXnDevicesSensorV2.so" />
-    <Module path="/home/nburrus/tmp/openni/nburrus/build/lib/libXnDeviceFile.so" />
-    <Module path="/home/nburrus/tmp/openni/nburrus/build/lib/libXnDDK.so" />
+    <Module path="/home/nburrus/tmp/openni/nburrus/build/lib/libXnDevicesSensorV2.so" configDir="config"/>
+    <Module path="/home/nburrus/tmp/openni/nburrus/build/lib/libXnDeviceFile.so" configDir="config"/>
 </Modules>
